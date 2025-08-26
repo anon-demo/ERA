@@ -647,7 +647,16 @@
 
                 <div class="preview-section" id="previewSection">
                     <img id="previewImage" class="preview-image" alt="Preview">
-                    <button class="generate-btn" id="generateBtn">Generate HTML with v0.dev</button>
+                    <!-- Add this just above your "Generate HTML with v0.dev" button -->
+					<div id="redirect-question" style="margin: 1em 0; padding: 1em; border: 1px solid #ccc; border-radius: 8px;">
+					  <label>
+						When the user clicks on 
+						<input type="text" id="redirect-trigger" placeholder="button text or element" />
+						, the webpage should redirect to 
+						<input type="url" id="redirect-url" placeholder="https://example.qualtrics.com" />
+					  </label>
+					</div>
+					<button class="generate-btn" id="generateBtn">Generate HTML with v0.dev</button>
                 </div>
 
                 <div class="loading" id="loading">
@@ -823,7 +832,7 @@
         let selectedFile = null;
         let cleanHtmlCode = '';
         let conversationHistory = []; // Added conversation tracking
-        const defaultPrompt = 'Please recreate this UI as a fully functional standalone HTML webpage with JavaScript. All interactive elements should work as they would on the real website - clicking different options should select them, buttons should be clickable, and any user interactions should have appropriate visual feedback and state changes.';
+        const defaultPrompt = 'Please recreate this UI as a fully functional standalone HTML webpage with JavaScript. All interactive elements should work as they would on the real website - clicking different options should select them, buttons should be clickable, and any user interactions should have appropriate visual feedback and state changes. If there are any query parameters present in the URL when the user arrives at this webpage, please retain those and pass them as parameters when redirecting.';
 
         uploadArea.addEventListener('click', () => {
             fileInput.click();
@@ -956,7 +965,17 @@
                     console.log('Extracted HTML length:', cleanHtmlCode.length);
                     console.log('Has JavaScript:', hasJavaScript(cleanHtmlCode));
                     
-                    promptContent.textContent = defaultPrompt;
+                    let promptContent = defaultPrompt;  // store the base prompt as a string
+
+					const trigger = document.getElementById("redirect-trigger").value.trim();
+					const redirectUrl = document.getElementById("redirect-url").value.trim();
+
+					if (trigger && redirectUrl) {
+					  promptContent += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
+					}
+
+					// later you send `promptContent` to v0.dev
+
                     codeContent.textContent = cleanHtmlCode;
                     
                     const jsStatus = hasJavaScript(cleanHtmlCode) ? 
