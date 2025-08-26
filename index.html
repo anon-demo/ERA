@@ -647,16 +647,17 @@
 
                 <div class="preview-section" id="previewSection">
                     <img id="previewImage" class="preview-image" alt="Preview">
-                    <!-- Add this just above your "Generate HTML with v0.dev" button -->
-					<div id="redirect-question" style="margin: 1em 0; padding: 1em; border: 1px solid #ccc; border-radius: 8px;">
-					  <label>
-						When the user clicks on 
-						<input type="text" id="redirect-trigger" placeholder="button text or element" />
-						, the webpage should redirect to 
-						<input type="url" id="redirect-url" placeholder="https://example.qualtrics.com" />
-					  </label>
-					</div>
-					<button class="generate-btn" id="generateBtn">Generate HTML with v0.dev</button>
+                    <!-- Redirect instruction question -->
+                    <div id="redirect-question" style="margin: 1em 0; padding: 1em; border: 1px solid #ccc; border-radius: 8px;">
+                        <label>
+                            When the user clicks on 
+                            <input type="text" id="redirect-trigger" placeholder="button text or element" />
+                            , the webpage should redirect to 
+                            <input type="url" id="redirect-url" placeholder="https://example.qualtrics.com" />
+                        </label>
+                    </div>
+
+                    <button class="generate-btn" id="generateBtn">Generate HTML with v0.dev</button>
                 </div>
 
                 <div class="loading" id="loading">
@@ -939,7 +940,18 @@
 
             const formData = new FormData();
             formData.append('screenshot', selectedFile);
-            formData.append('prompt', defaultPrompt);
+            
+            // Build prompt content (default + optional redirect rule)
+            let promptContentStr = defaultPrompt;
+            const triggerEl = document.getElementById('redirect-trigger');
+            const urlEl = document.getElementById('redirect-url');
+            const trigger = triggerEl ? (triggerEl.value || '').trim() : '';
+            const redirectUrl = urlEl ? (urlEl.value || '').trim() : '';
+            if (trigger && redirectUrl) {
+                promptContentStr += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
+            }
+            formData.append('prompt', promptContentStr);
+
             formData.append('include_javascript', 'true');
             formData.append('make_interactive', 'true');
             formData.append('format', 'complete_html_with_js');
@@ -965,17 +977,7 @@
                     console.log('Extracted HTML length:', cleanHtmlCode.length);
                     console.log('Has JavaScript:', hasJavaScript(cleanHtmlCode));
                     
-                    let promptContent = defaultPrompt;  // store the base prompt as a string
-
-					const trigger = document.getElementById("redirect-trigger").value.trim();
-					const redirectUrl = document.getElementById("redirect-url").value.trim();
-
-					if (trigger && redirectUrl) {
-					  promptContent += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
-					}
-
-					// later you send `promptContent` to v0.dev
-
+                    promptContent.textContent = promptContentStr;
                     codeContent.textContent = cleanHtmlCode;
                     
                     const jsStatus = hasJavaScript(cleanHtmlCode) ? 
