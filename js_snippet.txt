@@ -1,0 +1,21 @@
+        generateBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            generateBtn.disabled = true;
+            loading.style.display = 'block';
+            resultsSection.style.display = 'none';
+            closePanels();
+
+            const formData = new FormData();
+            formData.append('screenshot', selectedFile);
+            
+            // Build prompt content (default + optional redirect rule)
+            let promptContentStr = defaultPrompt;
+            const triggerEl = document.getElementById('redirect-trigger');
+            const urlEl = document.getElementById('redirect-url');
+            const trigger = triggerEl ? (triggerEl.value || '').trim() : '';
+            const redirectUrl = urlEl ? (urlEl.value || '').trim() : '';
+            if (trigger && redirectUrl) {
+                promptContentStr += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
+            }
+            formData.append('prompt', promptContentStr);

@@ -50,12 +50,7 @@
 
         /* Added main content area with flexible layout */
         .main-content {
-            display: flex;
-			flex-direction: column;
-			max-width: 100vw;
-			overflow-x: hidden;
-			padding: 1em;
-			box-sizing: border-box;
+            display: grid;
             grid-template-columns: 1fr;
             min-height: 0;
         }
@@ -67,9 +62,6 @@
         .left-panel {
             display: flex;
             flex-direction: column;
-			width: 100%;
-			max-width: 100%;
-			box-sizing: border-box;
             border-right: 1px solid #eee;
         }
 
@@ -89,14 +81,9 @@
         }
 
         .upload-area {
-			width: 100%;
-			max-width: 100%;
-			box-sizing: border-box;
-			text-align: center;
-			padding: 1em;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-			overflow: hidden;
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            padding: 60px 20px;
             text-align: center;
             transition: all 0.3s ease;
             cursor: pointer;
@@ -141,11 +128,7 @@
         }
 
         .preview-image {
-			width: 100%;
             max-width: 100%;
-			height: auto;
-			display: block;
-			margin: 1em 0;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin-bottom: 20px;
@@ -625,47 +608,6 @@
             background: #5a6268;
         }
 
-		/* Constrain response containers and content */
-		.response-container,
-		.response-content,
-		.code-container,
-		.code-content {
-			max-width: 100%;      /* never exceed parent/container width */
-			box-sizing: border-box;
-			overflow-x: auto;     /* allow horizontal scroll instead of breaking layout */
-			word-wrap: break-word; /* break long words/lines */
-		}
-
-		/* Optional: constrain the status message and text sections */
-		.status-message,
-		.response.title,
-		p.response.title {
-			max-width: 100%;
-			overflow-wrap: break-word;
-		}
-
-		/* Make code-actions buttons wrap instead of pushing out */
-		.code-actions,
-		.action-buttons {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 8px;
-		}
-
-		/* Ensure iframe preview stays within container */
-		.preview-iframe {
-			max-width: 100%;
-			width: 100%;
-			height: 100%;
-			box-sizing: border-box;
-		}
-
-		/* Ensure main results section stays within viewport */
-		.results-section {
-			max-width: 100%;
-			overflow-x: hidden;
-		}
-
         /* Added responsive design */
         @media (max-width: 1200px) {
             .main-content.split-view {
@@ -688,7 +630,7 @@
     <div class="container">
         <div class="header">
             <h1>Experimental Realism AI</h1>
-            <p>Research Tool - Create realistic choice webpages for lab & online marketing experiments</p>
+            <p>Consumer Research Tool - Create realistic eCommerce choice webpages for lab experiments</p>
         </div>
 
         <!-- Restructured main content with split view capability -->
@@ -714,24 +656,35 @@
                             <input type="url" id="redirect-url" placeholder="https://example.qualtrics.com" />
                         </label>
                     </div>
-					<!-- Additional changes question (Q2) -->
-					<div id="changes-question" style="margin: 1em 0; padding: 1em; border: 1px solid #ccc; border-radius: 8px;">
-					  <label for="changes-text">
-						Please describe anything else that you would like to look different than in the above screenshot.
-						<br>
-						<small>Leave this blank if you don’t see any changes that you’d like. It can also sometimes be helpful to add a sentence saying you want to preserve [list key features] exactly as they appear in the screenshot. </small>
-					  </label>
-					  <br>
-					  <textarea id="changes-text" rows="4" style="width: 100%; margin-top: 0.5em;"></textarea>
-					</div>
+					<!-- Additional changes question -->
+				<div id="changes-question" style="margin: 1em 0; padding: 1em; border: 1px solid #ccc; border-radius: 8px;">
+				  <label for="changes-text">
+					Please describe anything else that you would like to look different than in the above screenshot.
+					<br>
+					<small>Leave this blank if you don’t see any changes that you’d like.</small>
+				  </label>
+				  <br>
+				  <textarea id="changes-text" rows="4" style="width: 100%; margin-top: 0.5em;"></textarea>
+				</div>
 
+				<!-- Process tracing question -->
+				<div id="tracing-question" style="margin: 1em 0; padding: 1em; border: 1px solid #ccc; border-radius: 8px;">
+				  <p><strong>Process Tracing (optional):</strong> Please track the following variables that I select below and pass these as query parameters in the URL when redirecting:</p>
+				  <label><input type="checkbox" id="trace-time"> a) time (how long participants spend on this webpage before being redirected)</label><br>
+				  <label><input type="checkbox" id="trace-clicks"> b) timestamps for each click on the webpage</label><br>
+				  <label><input type="checkbox" id="trace-scroll"> c) maxScroll (whether and how much they scrolled down; 100 = scrolled all the way to the bottom)</label><br>
+				  <label>
+					<input type="checkbox" id="trace-mouseovers"> d) mouseovers over the following areas of interest (with timestamps):
+					<input type="text" id="trace-mouseovers-text" placeholder="enter areas of interest" style="margin-left: 0.5em;">
+				  </label>
+				</div>
 
-                    <button class="generate-btn" id="generateBtn">Generate your experiment webpage with v0.dev</button>
+                    <button class="generate-btn" id="generateBtn">Generate HTML with v0.dev</button>
                 </div>
 
                 <div class="loading" id="loading">
                     <div class="loading-spinner"></div>
-                    <p>Generating your experiment webpage with AI... This may take a moment.</p>
+                    <p>Generating HTML with AI... This may take a moment.</p>
                 </div>
 
                 <div class="results-section" id="resultsSection">
@@ -773,7 +726,7 @@
                     <!-- Added Use This Design button and status message area -->
                     <div class="status-message" id="statusMessage"></div>
 					<p class="response title">
-                        <br><br><br>When you're happy with the design, click "Use This Design" below and we will walk you through next steps (e.g., how to integrate with Qualtrics & your options). If you'd like to edit the design, you can first select <strong>Make Changes</strong> and you can examine a "Fullscreen Preview" after each change.
+                        <br><br><br>When you're happy with the design, click "Use This Design" below and we will walk you through next steps & options. If you'd like to edit the design, you can first select "Make Changes" and you can examine a "Fullscreen Preview" after each change.
                     </p>
                     <button class="use-design-btn" id="useDesignBtn">Use This Design</button>
                 </div>
@@ -902,7 +855,7 @@
         let selectedFile = null;
         let cleanHtmlCode = '';
         let conversationHistory = []; // Added conversation tracking
-        const defaultPrompt = 'Please recreate this UI as a fully functional standalone HTML webpage with JavaScript. All interactive elements should work as they would on the real website - clicking different options should select them, buttons should be clickable, and any user interactions should have appropriate visual feedback and state changes. If there are any query parameters present in the URL when the user arrives at this webpage, please retain those and pass them as parameters when redirecting. Also track the following variables and pass them as query parameters when redirecting: (1) allClicks--every element the user clicks on, labeled with contextual information about what they clicked (button text & contextual info separated by underscores, no spaces). For each click, include: the button/element text, plus identifying context from the parent container (such as product name, price, or other distinguishing information), followed by a dash & how many seconds after page load each click occurred (to 2 decimal places). Examples: "Buy_Iphone15pro$999-2.34", "AddtoCart_Productposition3Blueshirt$29.99-5.67"; (2) finalChoice which indicates which option was selected when the page redirected to the redirectURL and uses the same style labels separated by underscores as allClicks; (3) decisionTime--how many seconds after page load they spent on the page prior to being redirected to the redirectURL; For product images or photos that cannot be closely replicated: use placeholder images that match the exact dimensions and positioning of the original images. For product images, use descriptive placeholders. For simple icons, graphics, or UI elements, recreate them as closely as possible using code.';
+        const defaultPrompt = 'Please recreate this UI as a fully functional standalone HTML webpage with JavaScript. All interactive elements should work as they would on the real website - clicking different options should select them, buttons should be clickable, and any user interactions should have appropriate visual feedback and state changes. If there are any query parameters present in the URL when the user arrives at this webpage, please retain those and pass them as parameters when redirecting. Also track the final choice the user makes and all clicks and pass these as query parameters called finalchoice and allClicks, respectively.';
 
         uploadArea.addEventListener('click', () => {
             fileInput.click();
@@ -1011,35 +964,22 @@
             formData.append('screenshot', selectedFile);
             
             // Build prompt content (default + optional redirect rule)
-			// Build prompt content (default + optional redirect rule + optional changes)
-			let promptContentStr = defaultPrompt;
-
-			// Q1: Redirect rule
-			const triggerEl = document.getElementById('redirect-trigger');
-			const urlEl = document.getElementById('redirect-url');
-			const trigger = triggerEl ? (triggerEl.value || '').trim() : '';
-			const redirectUrl = urlEl ? (urlEl.value || '').trim() : '';
-			if (trigger && redirectUrl) {
-			  promptContentStr += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
-			}
-
-			// Q2: Additional changes
-			const changesEl = document.getElementById('changes-text');
-			const changesText = changesEl ? (changesEl.value || '').trim() : '';
-			if (changesText) {
-			  promptContentStr += " Please make the following additional changes to the screenshot when making the webpage: " + changesText;
-			}
-
-			// Append to formData for API
-			formData.append('prompt', promptContentStr);
-
+            let promptContentStr = defaultPrompt;
+            const triggerEl = document.getElementById('redirect-trigger');
+            const urlEl = document.getElementById('redirect-url');
+            const trigger = triggerEl ? (triggerEl.value || '').trim() : '';
+            const redirectUrl = urlEl ? (urlEl.value || '').trim() : '';
+            if (trigger && redirectUrl) {
+                promptContentStr += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
+            }
+            formData.append('prompt', promptContentStr);
 
             formData.append('include_javascript', 'true');
             formData.append('make_interactive', 'true');
             formData.append('format', 'complete_html_with_js');
 
             try {
-                const response = await fetch('/api/generate', {
+                const response = await fetch('/generate', {
                     method: 'POST',
                     body: formData
                 });
@@ -1229,7 +1169,7 @@
             chatLoading.style.display = 'flex';
 
             try {
-                const response = await fetch('/api/chat', {
+                const response = await fetch('/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

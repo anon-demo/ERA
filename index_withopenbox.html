@@ -902,7 +902,7 @@
         let selectedFile = null;
         let cleanHtmlCode = '';
         let conversationHistory = []; // Added conversation tracking
-        const defaultPrompt = 'Please recreate this UI as a fully functional standalone HTML webpage with JavaScript. All interactive elements should work as they would on the real website - clicking different options should select them, buttons should be clickable, and any user interactions should have appropriate visual feedback and state changes. If there are any query parameters present in the URL when the user arrives at this webpage, please retain those and pass them as parameters when redirecting. Also track the following variables and pass them as query parameters when redirecting: (1) allClicks--every element the user clicks on, labeled with contextual information about what they clicked (button text & contextual info separated by underscores, no spaces). For each click, include: the button/element text, plus identifying context from the parent container (such as product name, price, or other distinguishing information), followed by a dash & how many seconds after page load each click occurred (to 2 decimal places). Examples: "Buy_Iphone15pro$999-2.34", "AddtoCart_Productposition3Blueshirt$29.99-5.67"; (2) finalChoice which indicates which option was selected when the page redirected to the redirectURL and uses the same style labels separated by underscores as allClicks; (3) decisionTime--how many seconds after page load they spent on the page prior to being redirected to the redirectURL; For product images or photos that cannot be closely replicated: use placeholder images that match the exact dimensions and positioning of the original images. For product images, use descriptive placeholders. For simple icons, graphics, or UI elements, recreate them as closely as possible using code.';
+        const defaultPrompt = 'Please recreate this UI as a fully functional standalone HTML webpage with JavaScript. All interactive elements should work as they would on the real website - clicking different options should select them, buttons should be clickable, and any user interactions should have appropriate visual feedback and state changes. If there are any query parameters present in the URL when the user arrives at this webpage, please retain those and pass them as parameters when redirecting. Also track the following variables and pass them as query parameters when redirecting: (1) allClicks--every element the user clicks on, labeled with contextual information about what they clicked (button text & contextual info separated by underscores, no spaces). For each click, include: the button/element text, plus identifying context from the parent container (such as product name, price, or other distinguishing information), followed by a dash & how many seconds after page load each click occurred (to 2 decimal places). Examples: "Buy_Iphone15pro$999-2.34", "AddtoCart_Productposition3Blueshirt$29.99-5.67"; (2) finalChoice which indicates which option was selected when the page redirected to the redirectURL and uses the same style labels separated by underscores as allClicks; (3) decisionTime--how many seconds after page load they spent on the page prior to being redirected to the redirectURL; (4) allMouseovers--create invisible Areas of Interest (AOIs) over key elements like product names, prices, features, images, and buttons. Track all mouseovers using the same format as allClicks but with the feature name first, then underscore, then product/option identifier including price, then dash, then timestamp (how many seconds after page load to 2 decimal places), then tilde (~) and duration. Examples: "price_Netflixpremium$15.99-4.25~1.33", "devices_Netflixbasic1device-2.15~0.87", "features_Amazonstandardshipping-8.45~1.56". Implementation: add data-aoi attributes to elements, use mouseenter/mouseleave events for timing, include HTML comments indicating AOI boundaries for researcher reference, store in mouseTracking array. For product images or photos that cannot be closely replicated: use placeholder images that match the exact dimensions and positioning of the original images. For product images, use descriptive placeholders. For simple icons, graphics, or UI elements, recreate them as closely as possible using code.';
 
         uploadArea.addEventListener('click', () => {
             fileInput.click();
@@ -1039,7 +1039,7 @@
             formData.append('format', 'complete_html_with_js');
 
             try {
-                const response = await fetch('/api/generate', {
+                const response = await fetch('/generate', {
                     method: 'POST',
                     body: formData
                 });
@@ -1229,7 +1229,7 @@
             chatLoading.style.display = 'flex';
 
             try {
-                const response = await fetch('/api/chat', {
+                const response = await fetch('/chat', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

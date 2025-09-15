@@ -1,0 +1,33 @@
+        generateBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            generateBtn.disabled = true;
+            loading.style.display = 'block';
+            resultsSection.style.display = 'none';
+            closePanels();
+
+            const formData = new FormData();
+            formData.append('screenshot', selectedFile);
+            
+            // Build prompt content (default + optional redirect rule)
+			// Build prompt content (default + optional redirect rule + optional changes)
+			let promptContentStr = defaultPrompt;
+
+			// Q1: Redirect rule
+			const triggerEl = document.getElementById('redirect-trigger');
+			const urlEl = document.getElementById('redirect-url');
+			const trigger = triggerEl ? (triggerEl.value || '').trim() : '';
+			const redirectUrl = urlEl ? (urlEl.value || '').trim() : '';
+			if (trigger && redirectUrl) {
+			  promptContentStr += " When the user clicks on " + trigger + ", the webpage should redirect to " + redirectUrl + ".";
+			}
+
+			// Q2: Additional changes
+			const changesEl = document.getElementById('changes-text');
+			const changesText = changesEl ? (changesEl.value || '').trim() : '';
+			if (changesText) {
+			  promptContentStr += " Please make the following additional changes to the screenshot when making the webpage: " + changesText;
+			}
+
+			// Append to formData for API
+			formData.append('prompt', promptContentStr);
