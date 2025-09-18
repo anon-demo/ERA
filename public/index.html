@@ -13,11 +13,71 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #08ffe6 0%, #43e97b 100%);
+
             min-height: 100vh;
             padding: 20px;
         }
 
+        .navbar {
+            width: 100%;
+            padding: 0 0.5rem;
+            height: 70px;
+            background: var(--navbar-bg);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 18px rgba(8,255,230,0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+        }
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background: var(--navbar-hover);
+            border-radius: 10px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #151515;
+            letter-spacing: -2px;
+        }
+        .navbar-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-right: 38px;
+            letter-spacing: -1px;
+            white-space: nowrap;
+        }
+        .navbar-center {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .navbar-link, .navbar-dropdown > a {
+            color: var(--navbar-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 10px 11px;
+            border-radius: 7px;
+            transition: color 0.18s, background 0.15s;
+            cursor: pointer;
+            position: relative;
+            border: none;
+            background: none;
+            outline: none;
+        }
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -685,6 +745,23 @@
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-left">
+            <div class="logo-placeholder">E R A</div>
+            <a class="navbar-title" href="https://anon-demo.github.io/ERA-choice/ERAhome">View ERA Homepage (with examples & instructions)</span>
+        </div>
+        <div class="navbar-center">
+            <div class="navbar-dropdown">
+                <a class="navbar-link" href="https://anon-demo.github.io/ERA-choice/ERAhome#examples">Examples</a>
+
+            </div>
+
+            <a class="navbar-link" href="https://anon-demo.github.io/ERA-choice/ERAhome#how-it-works">How To</a>
+            <div class="navbar-dropdown">
+                <a class="navbar-link" href="https://anon-demo.github.io/ERA-choice/ERAhome#how-it-works">Integrations</a>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <div class="header">
             <h1>Experimental Realism AI</h1>
