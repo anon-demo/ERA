@@ -1,20 +1,19 @@
+// server-v0.js
 import express from 'express';
 import multer from 'multer';
 import fs from 'fs';
-import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { generateText } from 'ai'; // If you use this package
-import { vercel } from '@ai-sdk/vercel'; // Or your actual v0.dev API library
+import { generateText } from 'ai'; // Your v0 SDK
 
 dotenv.config();
 
 const app = express();
-const upload = multer({ dest: 'uploads/' }); // Or '/tmp' if you prefer
+const upload = multer({ dest: 'uploads/' });
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // Serve your frontend
+app.use(express.static('public')); // Serve frontend
 
 // ---- /api/generate ----
 app.post('/api/generate', upload.single('screenshot'), async (req, res) => {
@@ -29,27 +28,28 @@ app.post('/api/generate', upload.single('screenshot'), async (req, res) => {
 IMPORTANT: Include full JavaScript functionality and interactivity.`;
     }
 
+    // Read and encode the uploaded screenshot
     const imageBuffer = fs.readFileSync(req.file.path);
     const imageBase64 = imageBuffer.toString('base64');
     const mimeType = req.file.mimetype;
 
-    // Use your AI SDK here (modify as needed for your actual package)
+    // Build messages array for the current v0 API
+    const messages = [
+      {
+        role: "user",
+        content: `Create HTML from this screenshot: data:${mimeType};base64,${imageBase64}\n\n${prompt}`,
+      },
+    ];
+
+    // Call the AI API
     const response = await generateText({
-      model: vercel("v0-1.0-md"),
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            { type: "image", image: `data:${mimeType};base64,${imageBase64}` },
-          ],
-        },
-      ],
+      model: "v0-1.5-md",
+      messages,
       temperature: 0.7,
-      maxTokens: 8000,
+      maxTokens: 4000, // safer temporary value
     });
 
-    // Delete temp file
+    // Delete the temporary uploaded file
     fs.unlink(req.file.path, () => {});
 
     res.json({
@@ -91,10 +91,10 @@ Please return the complete updated HTML with only the requested changes, preserv
     messages.push({ role: "user", content: contextPrompt });
 
     const response = await generateText({
-      model: vercel("v0-1.0-md"),
+      model: "v0-1.5-md",
       messages,
       temperature: 0.7,
-      maxTokens: 8000,
+      maxTokens: 4000,
     });
 
     let changesDescription = "Updated based on request.";
