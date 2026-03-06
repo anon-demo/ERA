@@ -58,9 +58,13 @@ IMPORTANT: Include full JavaScript functionality and interactivity.`;
       message: "HTML generated successfully!",
     });
   } catch (e) {
-    console.error("Generation error:", e);
-    res.status(500).json({ error: "Failed to generate HTML" });
+  console.error("Generation error:", e);
+  if (e.response) {
+    console.error("API response:", e.response);
+    console.error("API response data:", e.response.data);
   }
+  res.status(500).json({ error: "Failed to generate HTML" });
+}
 });
 
 // ---- /api/chat ----
